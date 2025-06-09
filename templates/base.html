@@ -1,0 +1,96 @@
+{% load static %}
+{% load i18n %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Digital Twin Ocean Viewer{% endblock %}</title>
+    <link rel="icon" type="image/x-icon" href="{% static 'dto/images/favicon.ico' %}">
+
+    <!-- bootstrap, add before </body> -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+            integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+            crossorigin="anonymous"></script>
+    <!-- leaflet.js CDN, add before </body> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"
+            integrity="sha512-BwHfrr4c9kmRkLw6iXFdzcdWV/PGkVgiIyIWLLlTSXzWQzxuSg4DiQUCpauz/EWjgk5TYQqX/kvn9pG1NpYfqg=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- ChartJS and its dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+
+    <!-- Add in <head> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css"
+          integrity="sha512-Zcn6bjR/8RZbLEpLIeOwNtzREBAJnUKESxces60Mpoj+2okopSAcSUIUOseddDm0cxnGQzxIR7vJgsLZbdLE3w=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+
+    <link rel="stylesheet" href="{% static 'dto/css/main.css' %}">
+</head>
+<body>
+
+<div class="container-fluid">
+    <a href="#main-content" class="visually-hidden-focusable" tabindex="0">Skip to main content</a>
+
+    <!-- Top nav menu -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top" style="z-index:1100;" role="navigation"
+         aria-label="Main navigation">
+        <div class="container-fluid">
+            <img src="{% static 'dto/images/favicon.png' %}" alt="Logo"
+                 style="height:32px; width:auto; margin-right:10px; display:inline-block; vertical-align:middle;">
+            <a class="navbar-brand" href="#">Digital Twin Ocean</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNavbar"
+                    aria-controls="topNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="topNavbar">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                    <!-- Add more nav items as needed -->
+                </ul>
+            </div>
+        </div>
+        <div class="ms-auto">
+            <form action="{% url 'set_language' %}" method="post">
+                {% csrf_token %}
+                <select name="language" onchange="this.form.submit()" class="form-select d-inline w-auto">
+                    {% get_current_language as LANGUAGE_CODE %}
+                    {% get_available_languages as LANGUAGES %}
+                    {% for lang in LANGUAGES %}
+                    <option value="{{ lang.0 }}" {% if lang.0 == LANGUAGE_CODE %} selected{% endif %}>
+                        {{ lang.1 }}
+                    </option>
+                    {% endfor %}
+                </select>
+                <input type="hidden" name="next" value="{{ request.path }}">
+            </form>
+        </div>
+    </nav>
+
+    <!-- left nav menu -->
+    <nav id="nav_id_left_sidebar" role="navigation" aria-label="Sidebar navigation">
+        <div class="accordion" id="sidebarAccordion">
+            <div class="accordion" id="timeseriesAccordion">
+                {% block accordion_menu %}{% endblock accordion_menu %}
+            </div>
+    </nav>
+    <main id="main-content" tabindex="-1" role="main">
+        {% block content %}
+        <!-- Page content goes here -->
+        {% endblock %}
+    </main>
+</div>
+
+{% block javascript %}
+{% endblock javascript %}
+</body>
+</html>

@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block accordion_menu %}
+<div class="accordion-item">
+    <h2 class="accordion-header">
+        <button class="accordion-button pe-none" type="button"
+                aria-expanded="true" disabled>
+            {% trans 'Date Range' %}
+        </button>
+    </h2>
+    <div class="show">
+        <div class="accordion-body">
+            <div class="mb-3">
+                <div class="d-flex flex-column gap-2">
+                    <div class="input-group">
+                        <span class="input-group-text w-25">{% trans 'Start' %}</span>
+                        <input type="date" class="form-control" id="ts-start-date">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-text w-25">{% trans 'End' %}</span>
+                        <input type="date" class="form-control" id="ts-end-date">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-text">{% trans 'Selected' %}</span>
+                        <input type="date" class="form-control" id="ts-selected-date">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="accordion-item">
+    <h2 class="accordion-header">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                data-bs-target="#timeseriesPanel">
+            {% trans 'Time Series Data' %}
+        </button>
+    </h2>
+    <div id="timeseriesPanel" class="accordion-collapse collapse" data-bs-parent="#timeseriesAccordion">
+        <div class="accordion-body">
+            <div id="noMpaSelected" class="alert alert-info">
+                {% trans 'Please select an MPA on the map to view time series data.' %}
+            </div>
+            <div id="timeseriesContent" style="display: none;">
+                <div class="form-group mb-3">
+                    <label for="parameterSelect">{% trans 'Select Parameter:' %}</label>
+                    <select class="form-select mb-1" id="parameterSelect">
+                        <option value="">{% trans 'Choose parameter...' %}</option>
+                    </select>
+                    <button id="loadDataBtn" class="btn btn-primary" disabled>
+                        {% trans 'Generate Timeseries Plot' %}
+                    </button>
+                </div>
+                <div id="timeseriesChart"></div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock accordion_menu %}
+
+{% block content %}
+<div id="map">
+    <div id="map-loading" class="leaflet-control" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+</div>
+
+<!-- Chart Modal -->
+<div class="modal fade" id="chartModal" tabindex="-1" aria-labelledby="chartModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="d-flex flex-column w-100">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="modal-title mb-0">Time Series</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <div class="input-group">
+                            <span class="input-group-text">Start</span>
+                            <input type="date" class="form-control" id="modal-start-date">
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-text">Selected</span>
+                            <input type="date" class="form-control" id="modal-selected-date">
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-text">End</span>
+                            <input type="date" class="form-control" id="modal-end-date">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div id="climatology-progress-container" class="progress mb-3" style="height: 25px;">
+                    <div id="climatology-progress" class="progress-bar"
+                         role="progressbar"
+                         style="width: 0%;"
+                         aria-valuenow="0"
+                         aria-valuemin="0"
+                         aria-valuemax="100">
+                    </div>
+                </div>
+                <div id="modalTimeseriesChart"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script src="{% static 'dto/js/timeseries_chart.js' %}"></script>
+<script src="{% static 'dto/js/mpa_map.js' %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const mpaMap = new MPAMap('map', {
+            endpoints: {
+                parameters: "{% url 'dto:available_parameters' mpa_id='0' %}".replace('0', '{id}'),
+                timeseries: "{% url 'dto:mpa_timeseries' mpa_id='0' parameter='__param__' %}"
+                    .replace('0', '{id}')
+                    .replace('__param__', '{parameter}'),
+                latestDate: "{% url 'dto:latest_date' %}",
+                mpaZones: "{% url 'dto:mpa_zones_geojson' %}"
+            }
+        });
+        const timeseriesChart = new TimeseriesChart('modalTimeseriesChart');
+        mpaMap.addChartObserver(timeseriesChart);
+
+        mpaMap.loadMPAZones();
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,13 @@
+Django>=5.0
+djangorestframework
+python-dotenv
+uvicorn
+psycopg2-binary
+concurrent-log-handler
+selenium
+geopandas>=0.14.0  # Replace GDAL with geopandas
+djangorestframework-gis
+geopandas
+requests
+tqdm
+matplotlib

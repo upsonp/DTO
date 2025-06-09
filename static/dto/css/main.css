@@ -1,0 +1,204 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    padding-top: 56px; /* Height of navbar */
+}
+
+/* Map functionality */
+#map {
+    width: 100%;
+    height: calc(100vh - 56px);
+    margin-top: 0; /* Remove this since body already has padding-top */
+}
+
+#map-loading {
+    position: absolute;
+    z-index: 1000;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 10px;
+    border-radius: 4px;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3388ff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.leaflet-top {
+    z-index: 1000;
+}
+
+.leaflet-popup-content {
+    margin: 10px;
+    font-size: 14px;
+}
+
+.leaflet-popup-content-wrapper {
+    border-radius: 4px;
+    box-shadow: 0 3px 14px rgba(0,0,0,0.2);
+}
+
+.leaflet-popup-tip-container {
+    margin-top: -1px;
+}
+
+.leaflet-control-attribution {
+    display: none !important;
+}
+
+.leaflet-control {
+    transition: all 0.3s ease;
+}
+
+.leaflet-control-layers {
+    z-index: 1001;
+}
+
+.leaflet-control-layers {
+    border-radius: 4px;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+}
+
+.mpa-tooltip {
+    padding: 6px 8px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+
+/* Data Modal styling */
+/* Adjust modal positioning */
+.modal {
+    padding-top: 56px; /* Height of the navbar */
+}
+
+.modal-dialog {
+    margin-top: 1rem; /* Add some space after the navbar */
+}
+
+/* Optional: Make modal take more vertical space */
+.modal-dialog.modal-lg {
+    max-height: calc(100vh - 76px); /* 100vh - (navbar + margin) */
+}
+
+#modalTimeseriesChart {
+    height: 60vh;
+    width: 100%;
+}
+
+.modal-body {
+    padding: 1rem;
+    height: calc(70vh);
+}
+
+.modal-content {
+    max-height: calc(100vh - 76px);
+    overflow-y: auto;
+}
+
+main.col {
+    margin-left: 300px; /* Same as sidebar width */
+}
+
+.visually-hidden-focusable {
+    position: absolute;
+    left: -9999px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    z-index: 2000;
+}
+
+.visually-hidden-focusable:focus {
+    position: static;
+    width: auto;
+    height: auto;
+    left: 0;
+    background: #fff;
+    color: #1976d2;
+    padding: 8px 16px;
+    font-weight: bold;
+    outline: 2px solid #1976d2;
+}
+
+/* Sidebar */
+#nav_id_left_sidebar {
+    position: fixed;
+    top: 56px; /* Height of navbar */
+    left: 0;
+    height: 100vh;
+    width: 300px;
+    background: #64b5f6 !important;
+    z-index: 999;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+    overflow-y: auto;
+    padding: 0;
+}
+
+@media (max-width: 767.98px) {
+    #map {
+        height: calc(100vh - 56px);
+        width: 100vw;
+    }
+
+    .leaflet-control-layers {
+        font-size: 16px; /* Better touch targets */
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}
+
+/* Top navbar */
+.navbar {
+    background-color: #fff !important;
+}
+
+/* Sidebar */
+#nav_id_left_sidebar {
+    background: #fff !important;
+}
+
+/* Nav link text color for both navs */
+.nav-link {
+    color: #666 !important;
+    transition: all 0.2s;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    background-color: #64b5f6 !important;
+    color: #000 !important;
+}
+.nav-link:focus {
+    outline: 3px solid #ffeb3b;
+    outline-offset: 2px;
+    background: #1976d2 !important;
+    color: #fff !important;
+}
+.accordion-button:not(.collapsed) {
+    background-color: #e3f2fd !important; /* Replace with your desired color */
+}
